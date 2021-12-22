@@ -1,0 +1,6 @@
+name = GitHub Labels
+description = Provides CSS that allows easy formatting of GitHub labels from specified repositories.
+backdrop = 1.x
+type = module
+
+configure = admin/config/content/github_labels
