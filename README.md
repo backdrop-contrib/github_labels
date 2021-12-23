@@ -24,7 +24,7 @@ GitHub labels are incorporated into HTML by creating `<span class="...">...</spa
 
 A typical example is:
 
-`<span class="gh-label gh-label-pr-needs-work">PR&nbsp;-&nbsp;Needs&nbsp;Work</span>` for a label titled "PR - Needs Work". Note that the non-breaking spaces are needed to avoid the tag breaking due to word-wrapping.
+`<span class="gh-label gh-label-pr-needs-work">PR - Needs Work</span>` for a label titled "PR - Needs Work".
 
 If you install and enable the Token Filter module, then you can use tokens in filtered text, which are simpler:
 
@@ -34,7 +34,7 @@ Tokens are compatible with WYSIWYG editors like CKEditor, but be aware that if y
 
 One possible use case is to hyperlink the label to another page (for example, the GitHub issue queue filtered to that label). Since themed hyperlinks often have special text color and/or text-decoration defined that would override the formatting defined by GitHub labels, you should wrap GitHub Labels HTML with an `<a>` tag with the `gh-label-wrapper` class, like this:
 
-`<a class="gh-label-wrapper" href="..."><span class="gh-label gh-label-pr-needs-work">PR&nbsp;-&nbsp;Needs&nbsp;Work</span></a>`
+`<a class="gh-label-wrapper" href="..."><span class="gh-label gh-label-pr-needs-work">PR - Needs Work</span></a>`
 
 Or you can use a token that links to the filtered issue queue:
 

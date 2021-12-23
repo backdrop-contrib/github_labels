@@ -145,7 +145,7 @@ function github_labels_info() {
             $data = array();
             $name = check_plain($row['name']);
             $clean_name = path_clean_string($name);
-            $html = '<span class="gh-label gh-label-' . $clean_name . '">' . str_replace(' ', '&nbsp;', $name) . '</span>';
+            $html = '<span class="gh-label gh-label-' . $clean_name . '">' . $name . '</span>';
             $link_html = '<a class="gh-label-wrapper" href="https://github.com/backdrop/backdrop-issues/labels/' . $clean_name . '">' . $html . '</a>';
             $label_data = array(
               'name' => $name,
@@ -198,6 +198,7 @@ function github_labels_css() {
   font-size: 13px;
   font-weight: 600;
   font-family: sans-serif;
+  white-space: nowrap;
 }
 a.gh-label-wrapper span {
   text-decoration: none;
