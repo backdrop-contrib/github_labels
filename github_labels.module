@@ -64,16 +64,19 @@ function github_labels_token_info() {
   $info['tokens']['gh-label'] = array();
   $info['tokens']['gh-label-link'] = array();
   $labels_info = github_labels_info();
-  foreach ($labels_info['all'] as $clean_name => $data) {
-    $info['tokens']['gh-label'][$clean_name] = array(
-      'name' => $data['name'],
-      'description' => t('GitHub label for %name', array('%name' => $data['name'])),
-    );
-    $info['tokens']['gh-label-link'][$clean_name] = array(
-      'name' => $data['name'],
-      'description' => t('GitHub label hyperlink for %name', array('%name' => $data['name'])),
-    );
+  if (!empty($labels_info['all'])) {
+    foreach ($labels_info['all'] as $clean_name => $data) {
+      $info['tokens']['gh-label'][$clean_name] = array(
+        'name' => $data['name'],
+        'description' => t('GitHub label for %name', array('%name' => $data['name'])),
+      );
+      $info['tokens']['gh-label-link'][$clean_name] = array(
+        'name' => $data['name'],
+        'description' => t('GitHub label hyperlink for %name', array('%name' => $data['name'])),
+      );
+    }
   }
+
   return $info;
 }
 
