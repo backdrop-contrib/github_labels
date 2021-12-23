@@ -4,7 +4,6 @@
  * Contains admin callbacks for the Role help module.
  */
 
-
 /**
  * Return the settings form for GitHub Labels.
  */
@@ -22,10 +21,11 @@ function github_labels_settings_form($form, &$form_state) {
     '#description' => t('Enter the GitHub repositories in the form user/repository, one per line.'),
     '#default_value' => config_get('github_labels.settings', 'repositories'),
   );
+
+  $form = system_settings_form($form);
   $form['#validate'][] = 'github_labels_settings_form_validate';
   $form['#submit'][] = 'github_labels_settings_form_submit';
-
-  return system_settings_form($form);
+  return $form;
 }
 
 /**
@@ -44,11 +44,10 @@ function github_labels_settings_form_validate($form, &$form_state) {
 }
 
 /**
- * Submission function for settings forms.
+ * Post-processing submission function for settings forms.
  */
 function github_labels_settings_form_submit($form, &$form_state) {
-  cache_clear_all('github_labels_info', 'cache');
-  cache_clear_all('github_labels_css', 'cache');
+  github_labels_update_state(TRUE);
 }
 
 /**
@@ -63,9 +62,9 @@ function github_labels_report_page() {
     );
   }
 
-  $labels_info = github_labels_info();
-  if (!empty($labels_info['repositories'])) {
-    foreach ($labels_info['repositories'] as $repository => $repository_data) {
+  $labels_info = state_get('github_labels_labels_info');
+  if (!empty($labels_info)) {
+    foreach ($labels_info as $repository => $repository_data) {
       $build[$repository] = array(
         '#type' => 'fieldset',
         '#title' => l(check_plain($repository), 'https://github.com/' . $repository . '/labels'),
