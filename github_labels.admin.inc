@@ -65,30 +65,34 @@ function github_labels_report_page() {
       '#suffix' => '</p>',
     );
   }
+
   $labels_info = github_labels_info();
-  foreach ($labels_info['repositories'] as $repository => $repository_data) {
-    $build[$repository] = array(
-      '#type' => 'fieldset',
-      '#title' => l(check_plain($repository), 'https://github.com/' . $repository . '/labels'),
-    );
-    $header = array(
-      array('data' => t('Label')),
-      array('data' => t('Tokens')),
-      array('data' => t('Label HTML')),
-    );
-    $rows = array();
-    foreach ($repository_data as $data) {
-      $rows[] = array(
-        array('data' => $data['html']),
-        array('data' => '[gh-label:' . $data['clean_name'] . ']' . '<br>' . '[gh-label-link:' . $data['clean_name'] . ']'),
-        array('data' => '<code>' . check_plain($data['html']) . '</code>'),
+  if (!empty($labels_info['repositories'])) {
+    foreach ($labels_info['repositories'] as $repository => $repository_data) {
+      $build[$repository] = array(
+        '#type' => 'fieldset',
+        '#title' => l(check_plain($repository), 'https://github.com/' . $repository . '/labels'),
+      );
+      $header = array(
+        array('data' => t('Label')),
+        array('data' => t('Tokens')),
+        array('data' => t('Label HTML')),
+      );
+      $rows = array();
+      foreach ($repository_data as $data) {
+        $rows[] = array(
+          array('data' => $data['html']),
+          array('data' => '[gh-label:' . $data['clean_name'] . ']' . '<br>' . '[gh-label-link:' . $data['clean_name'] . ']'),
+          array('data' => '<code>' . check_plain($data['html']) . '</code>'),
+        );
+      }
+      $build[$repository]['table'] = array(
+        '#theme' => 'table',
+        '#header' => $header,
+        '#rows' => $rows,
       );
     }
-    $build[$repository]['table'] = array(
-      '#theme' => 'table',
-      '#header' => $header,
-      '#rows' => $rows,
-    );
   }
+
   return $build;
 }
