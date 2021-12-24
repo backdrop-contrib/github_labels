@@ -86,10 +86,10 @@ function github_labels_token_info() {
 function github_labels_tokens($type, $tokens, array $data = array(), array $options = array()) {
   $replacements = array();
   if ($type == 'gh-label' || $type == 'gh-label-link') {
-  $token_info = state_get('github_labels_token_info');
+    $token_info = state_get('github_labels_token_info');
     if ($type == 'gh-label') {
       foreach ($tokens as $key => $token) {
-        if (isset($labels_info['all'][$key])) {
+        if (isset($token_info[$key])) {
           $replacements[$token] = $token_info[$key]['html'];
         }
       }
@@ -97,7 +97,7 @@ function github_labels_tokens($type, $tokens, array $data = array(), array $opti
     else {
       // $type == 'gh-label-link'
       foreach ($tokens as $key => $token) {
-        if (isset($labels_info['all'][$key])) {
+        if (isset($token_info[$key])) {
           $replacements[$token] = $token_info[$key]['link_html'];
         }
       }
