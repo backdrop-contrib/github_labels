@@ -63,9 +63,9 @@ function github_labels_token_info() {
 
   $info['tokens']['gh-label'] = array();
   $info['tokens']['gh-label-link'] = array();
-  $labels_info = github_labels_info();
-  if (!empty($labels_info['all'])) {
-    foreach ($labels_info['all'] as $clean_name => $data) {
+  $token_info = state_get('github_labels_token_info');
+  if (!empty($token_info)) {
+    foreach ($token_info as $clean_name => $data) {
       $info['tokens']['gh-label'][$clean_name] = array(
         'name' => $data['name'],
         'description' => t('GitHub label for %name', array('%name' => $data['name'])),
@@ -86,11 +86,11 @@ function github_labels_token_info() {
 function github_labels_tokens($type, $tokens, array $data = array(), array $options = array()) {
   $replacements = array();
   if ($type == 'gh-label' || $type == 'gh-label-link') {
-    $labels_info = github_labels_info();
+  $token_info = state_get('github_labels_token_info');
     if ($type == 'gh-label') {
       foreach ($tokens as $key => $token) {
         if (isset($labels_info['all'][$key])) {
-          $replacements[$token] = $labels_info['all'][$key]['html'];
+          $replacements[$token] = $token_info[$key]['html'];
         }
       }
     }
@@ -98,7 +98,7 @@ function github_labels_tokens($type, $tokens, array $data = array(), array $opti
       // $type == 'gh-label-link'
       foreach ($tokens as $key => $token) {
         if (isset($labels_info['all'][$key])) {
-          $replacements[$token] = $labels_info['all'][$key]['link_html'];
+          $replacements[$token] = $token_info[$key]['link_html'];
         }
       }
     }
@@ -126,6 +126,7 @@ function github_labels_update_state($warn_user = FALSE) {
   $repositories = trim(config_get('github_labels.settings', 'repositories'));
   if (empty($repositories)) {
     state_set('github_labels_labels_info', array());
+    state_set('github_labels_token_info', array());
     state_set('github_labels_css', '');
     return;
   }
@@ -133,7 +134,7 @@ function github_labels_update_state($warn_user = FALSE) {
   // Build a structured and sanitized list of GitHub label information from the
   // configured repositories.
 
-  $labels_info = $css_info = array();
+  $labels_info = $token_info = $css_info = array();
   $repositories = explode("\n", $repositories);
   foreach ($repositories as $repository) {
     $repository = trim(check_plain($repository));
@@ -158,6 +159,9 @@ function github_labels_update_state($warn_user = FALSE) {
               'color' => $row['color'],
             );
             $info_data[$clean_name] = $label_data;
+            if (!isset($token_info[$clean_name])) {
+              $token_info[$clean_name] = $label_data;
+            }
             if (!isset($css_info[$clean_name])) {
               $css_info[$clean_name] = $label_data;
             }
@@ -185,10 +189,12 @@ function github_labels_update_state($warn_user = FALSE) {
   }
   if (empty($labels_info)) {
     state_set('github_labels_labels_info', array());
+    state_set('github_labels_token_info', array());
     state_set('github_labels_css', '');
     return;
   }
   state_set('github_labels_labels_info', $labels_info);
+  state_set('github_labels_token_info', $token_info);
 
   // Build the CSS for these labels.
 
