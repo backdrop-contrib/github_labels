@@ -134,7 +134,7 @@ function github_labels_update_state($warn_user = FALSE) {
   // Build a structured and sanitized list of GitHub label information from the
   // configured repositories.
 
-  $labels_info = $token_info = $css_info = array();
+  $labels_info = $token_info = array();
   $repositories = explode("\n", $repositories);
   foreach ($repositories as $repository) {
     $repository = trim(check_plain($repository));
@@ -161,9 +161,6 @@ function github_labels_update_state($warn_user = FALSE) {
             $info_data[$clean_name] = $label_data;
             if (!isset($token_info[$clean_name])) {
               $token_info[$clean_name] = $label_data;
-            }
-            if (!isset($css_info[$clean_name])) {
-              $css_info[$clean_name] = $label_data;
             }
           }
           $labels_info[$repository] = $info_data;
@@ -196,7 +193,7 @@ function github_labels_update_state($warn_user = FALSE) {
   state_set('github_labels_labels_info', $labels_info);
   state_set('github_labels_token_info', $token_info);
 
-  // Build the CSS for these labels.
+  // Build the CSS for these labels (which we can do from $token_info).
 
   $css = '
 .gh-label {
@@ -215,7 +212,7 @@ a.gh-label-wrapper {
   color: transparent;
 }
   ';
-  foreach ($css_info as $clean_name => $data) {
+  foreach ($token_info as $clean_name => $data) {
     $background_color = strtolower($data['color']);
     list($r, $g, $b) = sscanf($background_color, "%02x%02x%02x");
     if ($r + $b + $g < 383) {
